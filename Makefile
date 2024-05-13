@@ -1,5 +1,5 @@
 YML_PATH = srcs/docker-compose.yml
-FILES_PATH = /Users/joonasmykkanen/data
+FILES_PATH = /home/jmykkane/data
 
 .PHONY: up down ps clean fclean prune re all reset info
 
