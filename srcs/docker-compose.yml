@@ -47,7 +47,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/joonasmykkanen/data/wordpress
+      device: /home/jmykkane/data/wordpress
       o: bind
 
   mariadb:
@@ -55,5 +55,5 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/joonasmykkanen/data/mariadb
+      device: /home/jmykkane/data/mariadb
       o: bind
