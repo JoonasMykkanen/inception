@@ -11,7 +11,7 @@ RUN mkdir /etc/nginx/ssl
 RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
 -out /etc/nginx/ssl/certificate.crt \
 -keyout /etc/nginx/ssl/certificate.key \
--subj "/C=FI/ST=HK/L=HK/O=42 School/OU=jmykkane/CN=127.0.0.1"
+-subj "/C=FI/ST=HK/L=HK/O=42 School/OU=jmykkane/CN=jmykkane.42.fr"
 
 
 COPY	conf/nginx.conf		/etc/nginx/
