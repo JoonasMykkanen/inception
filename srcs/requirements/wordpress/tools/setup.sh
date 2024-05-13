@@ -38,10 +38,12 @@ wp core install --allow-root \
 	--admin_email=$WP_ADMIN_EMAIL \
 	--path=/var/www/html/
 
-wp user create --allow-root \
-	$WP_USER $WP_EMAIL \
-	--role=editor \
-	--user_pass=$WP_PASSWORD
+wp user create \
+	$WP_USER \
+	$WP_EMAIL \
+	--role=author \
+	--user_pass=$WP_PASSWORD \
+	--allow-root
 
 wp theme install inspiro --allow-root --activate
 wp plugin update --all --allow-root
