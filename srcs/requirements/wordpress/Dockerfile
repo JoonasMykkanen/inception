@@ -21,4 +21,4 @@ RUN chmod +x /usr/local/bin/wp
 
 EXPOSE 9000
 
-CMD ["setup.sh"]
+CMD [ "setup.sh" ]
