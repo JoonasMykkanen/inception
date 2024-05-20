@@ -43,10 +43,8 @@ else
 		--role=author \
 		--user_pass=$WP_PASSWORD \
 		--allow-root
-	wp theme install neve --allow-root --activate
+	wp theme install inspiro --allow-root --activate
 	wp plugin update --all --allow-root
-	wp option update siteurl --allow-root "https://$DOMAIN_NAME"
-	wp option update home --allow-root "https://$DOMAIN_NAME"
 	echo "Finished installation and setup!"
 fi
 
