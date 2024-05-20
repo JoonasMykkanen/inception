@@ -48,5 +48,5 @@ else
 	echo "Finished installation and setup!"
 fi
 
-exec /usr/sbin/php-fpm7.4 -F
 echo "PHP engine runnning"
+exec "/usr/sbin/php-fpm7.4 -F"
