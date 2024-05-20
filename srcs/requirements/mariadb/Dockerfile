@@ -1,8 +1,5 @@
 FROM debian:bullseye
 
-# Set non-interactive to suppress debconf messages
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Install MariaDB
 RUN apt -y update && \
     apt install -y mariadb-server && \
