@@ -21,4 +21,6 @@ RUN chmod +x /usr/local/bin/wp
 
 EXPOSE 9000
 
-CMD [ "setup.sh" ]
+RUN "setup.sh"
+
+CMD ["/usr/sbin/php-fpm7.4", "-F"]

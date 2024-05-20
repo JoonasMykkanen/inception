@@ -1,12 +1,10 @@
-name: inception
+version: '3.8'
+
 services:
   web:
     build:
       context: ./requirements/nginx
     container_name: nginx
-    env_file: .env
-    networks:
-        - inception-net
     ports:
       - "443:443"
     volumes:
