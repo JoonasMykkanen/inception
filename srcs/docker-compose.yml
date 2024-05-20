@@ -1,6 +1,6 @@
 name: inception
 services:
-  web:
+  nginx:
     build:
       context: ./requirements/nginx
     container_name: nginx
