@@ -5,7 +5,7 @@ RUN getent group www-data || addgroup --system www-data
 RUN id -u www-data &>/dev/null || adduser --system --ingroup www-data --disabled-password --no-create-home www-data
 RUN chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html
 	
-RUN apt-get update && apt-get -y upgrade && apt-get -y install php7.4 php7.4-fpm php7.4-mysqli mariadb-client wget sendmail
+RUN apt-get update && apt-get -y upgrade && apt-get -y install php7.4 php7.4-fpm php7.4-mysqli php7.4-ftp mariadb-client wget sendmail
 
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
