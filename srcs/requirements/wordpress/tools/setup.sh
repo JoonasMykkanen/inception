@@ -49,4 +49,4 @@ else
 fi
 
 echo "PHP engine runnning"
-exec /usr/sbin/php-fpm7.4 -F
+exec "/usr/sbin/php-fpm7.4 -F
