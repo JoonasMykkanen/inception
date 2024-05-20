@@ -4,6 +4,7 @@ services:
     build:
       context: ./requirements/nginx
     container_name: nginx
+    env_file: .env
     networks:
         - inception-net
     ports:
