@@ -1,5 +1,7 @@
 FROM debian:bullseye
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get -y upgrade && \
 	apt-get -y install openssl ssl-cert nginx && \
 	rm -rf /var/lib/apt/lists/*
