@@ -1,25 +1,31 @@
-FROM debian:bullseye
+# Use VM Alpine version as base image
+FROM alpine:3.18
 
-RUN apt-get update && apt-get -y upgrade && \
-	apt-get -y install openssl ssl-cert nginx && \
-	rm -rf /var/lib/apt/lists/*
-	
-RUN adduser -D -H -s /sbin/nologin -g www-data -G www-data www-data
+# Install NGINX and SSL
+RUN apk update && \
+	apk add --no-cache \
+    nginx \
+    openssl
 
-
-RUN mkdir /etc/nginx/ssl
-RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
--out /etc/nginx/ssl/certificate.crt \
--keyout /etc/nginx/ssl/certificate.key \
--subj "/C=FI/ST=HK/L=HK/O=42 School/OU=jmykkane/CN=jmykkane.42.fr"
-
-
-COPY	conf/nginx.conf		/etc/nginx/
-
-RUN		mkdir -p /var/www/
-RUN		chown -R www-data:www-data /var/www/
-
-
+# Expose port for HTTPS
 EXPOSE 443
 
+# Create folders for certificates
+RUN mkdir -p /run/nginx /etc/nginx/ssl
+
+# Generate SSL cert & key
+RUN openssl req -newkey rsa:2048 -x509 -sha256 -days 365 -nodes \
+    -out /etc/nginx/ssl/inception.crt \
+    -keyout /etc/nginx/ssl/inception.key \
+    -subj "/C=FI/ST=Helsinki/L=Helsinki/O=42/OU=Hive/CN=jmykkane.42.fr"
+
+# Add a new user within the container
+RUN adduser -D -H -s /sbin/nologin -g www-data -G www-data www-data
+
+# Copy NGINX configuration to the container
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+RUN chmod 644 /etc/nginx/nginx.conf
+
+
+# Start NGINX
 CMD ["nginx", "-c", "/etc/nginx/nginx.conf", "-g", "daemon off;"]

@@ -1,24 +1,39 @@
-FROM debian:bullseye
+FROM alpine:3.18
 
-RUN mkdir -p /run/php && mkdir -p /var/www/html
-RUN getent group www-data || addgroup --system www-data
-RUN id -u www-data &>/dev/null || adduser --system --ingroup www-data --disabled-password --no-create-home www-data
-RUN chown -R www-data:www-data /var/www/html && chmod -R 775 /var/www/html
-	
-RUN apt-get update && apt-get -y upgrade && apt-get -y install php7.4 php7.4-fpm php7.4-mysqli php7.4-ftp mariadb-client wget sendmail
+# Create user nginx and add to primary and secondary group nginx (create if it doesn't exist)
+RUN addgroup -S nginx && \
+	adduser -S -G nginx -g nginx nginx
 
-COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+# Download everything wordpress needs (php engine)
+RUN apk update && \
+	apk add --no-cache \
+	php81 \
+	php81-fpm \
+	php81-cgi \
+	php81-phar \
+	php81-json \
+	php81-mysqli \
+	php81-curl \
+	php81-iconv \
+	curl \
+	wget \
+	composer \
+	bash \
+	mariadb-client
 
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
-	chmod +x wp-cli.phar && \
-	mv wp-cli.phar /usr/local/bin/wp
-
-WORKDIR /var/www/html
-
-COPY ./tools/setup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/setup.sh
-RUN chmod +x /usr/local/bin/wp
-
+# Listening port
 EXPOSE 9000
 
-CMD [ "setup.sh" ]
+# Create and copy paths and confs to cont
+RUN mkdir -p /run/php/ /var/www/html/wordpress/
+
+# Copy configuration
+COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
+
+# Copy setup script
+COPY ./tools/wp_setup.sh /
+RUN chmod +x wp_setup.sh
+
+WORKDIR /var/www/html/wordpress/
+
+ENTRYPOINT ["sh", "/wp_setup.sh"]

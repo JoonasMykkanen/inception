@@ -1,48 +1,28 @@
-YML_PATH = srcs/docker-compose.yml
-FILES_PATH = /home/jmykkane/data
-#FILES_PATH = /Users/jmykkane/data
-
-.PHONY: up down ps clean fclean prune re all reset info
-
 all:
-	@if [ ! -d "$(FILES_PATH)/mariadb" ]; then \
-		mkdir -p $(FILES_PATH)/mariadb; \
+	@if ! grep -q "jmykkane.42.fr" /etc/hosts; then \
+		echo "127.0.0.1 jmykkane.42.fr" >> /etc/hosts; \
 	fi
-	@if [ ! -d "$(FILES_PATH)/wordpress" ]; then \
-		mkdir -p $(FILES_PATH)/wordpress; \
+	@if ! grep -q "www.jmykkane.42.fr" /etc/hosts; then \
+		echo "127.0.0.1 www.jmykkane.42.fr" >> /etc/hosts; \
 	fi
-	docker compose -f $(YML_PATH) up
-
-up:
-	docker compose -f $(YML_PATH) up
-
-down:
-	docker compose -f $(YML_PATH) down
-
-ps:
-	docker compose -f $(YML_PATH) ps
-
+	@mkdir -p /Users/joonasmykkanen/data/mariadb-data
+	@mkdir -p /Users/joonasmykkanen/data/wordpress-data
+	docker-compose -f srcs/docker-compose.yml up --build
+	
 clean:
-	docker compose -f $(YML_PATH) down --rmi all -v
+	docker-compose -f srcs/docker-compose.yml down --rmi all -v
 
 fclean: clean
-	@if [ -d $(FILES_PATH) ]; then \
-		sudo rm -rf $(FILES_PATH); \
-	fi;
-
-prune:
-	docker system prune --all --force --volumes
-
-reset:
-	docker stop $(docker ps -a -q); docker rm $(docker ps -qa); \
-	docker rmi -f $(docker images -qa); docker volume rm $(docker volume ls -q); \
-	docker network rm $(docker network ls -q)
+	rm -rf /Users/joonasmykkanen/data/mariadb-data
+	rm -rf /Users/joonasmykkanen/data/wordpress-data
+	docker system prune -f
 
 re: fclean all
 
-rm_all:
-	docker stop $$(docker ps -aq);
-	docker rm $$(docker ps -qa);
-	docker rmi -f $$(docker images -qa);
-	docker volume rm $$(docker volume ls -q);
-	docker network rm $$(docker network ls -q);
+up:
+	docker-compose -f srcs/docker-compose.yml up -d
+
+down:
+	docker-compose -f srcs/docker-compose.yml down
+
+.PHONY: all clean fclean re up down

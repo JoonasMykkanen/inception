@@ -1,59 +1,67 @@
-name: inception
+version: '3.8'
+
+volumes:
+  mariadb-data:
+    name: mariadb-data
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/joonasmykkanen/data/mariadb-data
+      o: bind
+
+  wordpress-data:
+    name: wordpress-data
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/joonasmykkanen/data/wordpress-data
+      o: bind
+
+networks:
+  mynetwork:
+    name: rushnetwork
+
 services:
   nginx:
     build:
       context: ./requirements/nginx
-    container_name: nginx
-    networks:
-        - inception-net
+      dockerfile: Dockerfile
+    image: nginx:jmykkane
+    container_name: nginx-cont
     ports:
-      - "443:443"
-    volumes:
-      - wordpress:/var/www/html
+      - 443:443
     depends_on:
       - wordpress
-    restart: always
-
-  mariadb:
-    build:
-      context: ./requirements/mariadb
-    container_name: mariadb
     networks:
-        - inception-net
-    env_file: .env
-    volumes:
-     - mariadb:/var/lib/mysql
+      - mynetwork
     restart: always
+    volumes:
+      - wordpress-data:/var/www/html
 
   wordpress:
     build:
       context: ./requirements/wordpress/
-    container_name: wordpress
-    networks:
-        - inception-net
+      dockerfile: Dockerfile
+    image: wordpress:jmykkane
+    container_name: wordpress-cont
     env_file: .env
-    volumes:
-      - wordpress:/var/www/html
+    networks:
+      - mynetwork
+    restart: always
     depends_on:
       - mariadb
-    restart: always
-
-networks:
-    inception-net:
-
-volumes:
-  wordpress:
-    name: wordpress
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/jmykkane/data/wordpress
-      o: bind
+    volumes:
+      - wordpress-data:/var/www/html
 
   mariadb:
-    name: mariadb
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/jmykkane/data/mariadb
-      o: bind
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    image: mariadb:jmykkane
+    container_name: mariadb-cont
+    env_file: .env
+    restart: always
+    networks:
+      - mynetwork
+    volumes:
+      - mariadb-data:/var/lib/mysql
